@@ -5,7 +5,9 @@
 function add_meta_box_staff( ) {
 	add_meta_box('staff_meta2', 'Job Position','populate_staff_job_meta_box','staff' );
 	add_meta_box('staff_meta', 'Additional Information', 'populate_staff_additional_meta_box', 'staff' );
-	add_meta_box('staff_image', 'Add Staff Image', 'populate_staff_image_meta_box', 'staff' );
+	//  add_meta_box('staff_image', 'Add Staff Image', 'populate_staff_image_meta_box', 'staff' );
+	
+	add_meta_box('listingimagediv', __( 'Staff Image', 'text-domain' ), 'listing_image_metabox', 'staff');
 	add_meta_box('staff_bio', 'Add Staff Bio', 'staff_bio_meta_box', 'staff' );
 }
 add_action('add_meta_boxes', 'add_meta_box_staff');
@@ -19,7 +21,9 @@ function populate_staff_job_meta_box( $post ) {
 	$s_Phone = get_post_meta($post->ID, 'StaffPhone', 1);
 	$s_Email = get_post_meta($post->ID, 'StaffEmail', 1);	
 	?>
-	<!-- Defines the meta boxes -->
+	<style>
+#post-body #normal-sortables {min-height:0 !important;}
+	</style>
 	<table style="width: 100%;">
 		<tr>
 			<td><label for="JobTitle">Job Title:</label></td>
@@ -77,37 +81,56 @@ function populate_staff_additional_meta_box( $post ) {
 <?php 		
 }
 
-function populate_staff_image_meta_box( $post ){
-	$s_StaffImageURL = get_post_meta( $post->ID, 'ImageURL', 1 );
-	if(isset($s_StaffImageURL)) {
-		$s_ImageURL = esc_attr($s_StaffImageURL);
-	} else {
-		$s_ImageURL = plugin_dir_url( __FILE__ )."/images/noStaffPic.png";
-	}
-?>
-<table style="width:100%">
-	<tr>
-		<td style="max-width:50px;">
-			<label>Current Picture: </label>
-		</td>
-		<td>
-			<img id="CurrentImage" src="<?php echo $s_ImageURL; ?>" style="max-width:150px;width:100%;" />
-		</td>
-	</tr>
-	<tr>
-		<td style="max-width:50px;">
-			<label for="StaffUpload">Add New Picture: </label>
-		</td>
-		<td>
-			<div id="img"></div>
-      		<input type="hidden" class="img" name="ImageURL" id="ImageURL" value="<?php echo $s_ImageURL; ?>" />
-      		<input type="button" class="select-img" value="Select Image" />
-		</td>
-	</tr>
-</table>
 
-<?php
+function listing_image_metabox ( $post ) {
+	global $content_width, $_wp_additional_image_sizes;
+	$image_id = get_post_meta( $post->ID, '_listing_image_id', true );
+	$old_content_width = $content_width;
+	$content_width = 254;
+	if ( $image_id && get_post( $image_id ) ) {
+		if ( ! isset( $_wp_additional_image_sizes['staff-image'] ) ) {
+			$thumbnail_html = wp_get_attachment_image( $image_id, array( $content_width, $content_width ) );
+		} else {
+			$thumbnail_html = wp_get_attachment_image( $image_id, 'staff-image' );
+		}
+		if ( ! empty( $thumbnail_html ) ) {
+			$content = $thumbnail_html;
+			$content .= '<p class="hide-if-no-js"><a href="javascript:;" id="remove_listing_image_button" >' . esc_html__( 'Remove listing image', 'text-domain' ) . '</a></p>';
+			$content .= '<input type="hidden" id="upload_listing_image" name="_listing_cover_image" value="' . esc_attr( $image_id ) . '" />';
+		}
+		$content_width = $old_content_width;
+	} else {
+		$content = '<img src="" style="width:' . esc_attr( $content_width ) . 'px;height:auto;border:0;display:none;" />';
+		$content .= '<p class="hide-if-no-js"><a title="' . esc_attr__( 'Set staff image', 'text-domain' ) . '" href="javascript:;" id="upload_listing_image_button" id="set-listing-image" data-uploader_title="' . esc_attr__( 'Choose an image', 'text-domain' ) . '" data-uploader_button_text="' . esc_attr__( 'Set staff image', 'text-domain' ) . '">' . esc_html__( 'Set staff image', 'text-domain' ) . '</a></p>';
+		$content .= '<input type="hidden" id="upload_listing_image" name="_listing_cover_image" value="" />';
+	}
+	echo $content;
 }
+
+// function populate_staff_image_meta_box( $post ){
+// 	global $_wp_additional_image_sizes;
+// 	$image_id = get_post_meta( $post->ID, '_listing_image_id', true );
+
+// 	if ( $image_id && get_post( $image_id ) ) {
+// 		if ( ! isset( $_wp_additional_image_sizes['staff-image'] ) ) {
+// 			$thumbnail_html = wp_get_attachment_image( $image_id, array( $content_width, $content_width ) );
+// 		} else {
+// 			$thumbnail_html = wp_get_attachment_image( $image_id, 'staff-image' );
+// 		}
+// 		if ( ! empty( $thumbnail_html ) ) {
+// 			$content = $thumbnail_html;
+// 			$content .= '<p class="hide-if-no-js"><a href="javascript:;" id="remove_listing_image_button" >' . esc_html__( 'Remove listing image', 'text-domain' ) . '</a></p>';
+// 			$content .= '<input type="hidden" id="upload_listing_image" name="_listing_cover_image" value="' . esc_attr( $image_id ) . '" />';
+// 		}
+// 		$content_width = $old_content_width;
+// 	} else {
+// 		$content = '<img src="" style="width:150px;height:auto;border:0;display:none;" />';
+// 		$content .= '<p class="hide-if-no-js"><a title="' . esc_attr__( 'Set staff image', 'text-domain' ) . '" href="javascript:;" id="upload_listing_image_button" id="set-listing-image" data-uploader_title="' . esc_attr__( 'Choose an image', 'text-domain' ) . '" data-uploader_button_text="' . esc_attr__( 'Set staff image', 'text-domain' ) . '">' . esc_html__( 'Set staff image', 'text-domain' ) . '</a></p>';
+// 		$content .= '<input type="hidden" id="upload_listing_image" name="_listing_cover_image" value="" />';
+// 	}
+// 	echo $content;
+// }
+
 
 function staff_bio_meta_box( $o_Post ) {
 	$s_Bio = get_post_meta( $o_Post->ID, 'StaffBio', true );

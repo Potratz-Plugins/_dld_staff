@@ -33,15 +33,15 @@ function dld_staff_deactivation() {
 }
 register_deactivation_hook( __FILE__, 'dld_staff_deactivation' );
 
-function dld_staff_enque_js( $hook ) {
+function dld_staff_enqueue_js( $hook ) {
 	wp_enqueue_script( 'jquery.maskedinput', plugin_dir_url( __FILE__ ) . 'js/jquery.maskedinput.js' );
 	wp_enqueue_media();
 	wp_enqueue_script('dld-media-upload', plugin_dir_url( __FILE__ ) . 'js/dld-media-upload.js', null, null, true) ;
 }
-add_action( 'admin_enqueue_scripts', 'dld_staff_enque_js' );
+add_action( 'admin_enqueue_scripts', 'dld_staff_enqueue_js' );
 
 /**
- * Change Title for new staff Memebers to Staff Name,
+ * Change Title for new staff Members to Staff Name,
  * if post is not type staff the default  "Enter title here" will display
  */
 function change_title_display( $title ){
@@ -57,7 +57,7 @@ add_filter('enter_title_here','change_title_display');
 	
 function update_edit_form() {
 	echo ' enctype="multipart/form-data"';
-} // end update_edit_form
+}
 add_action('post_edit_form_tag', 'update_edit_form');
 
 function dld_staff_page_template( $page_template ){
@@ -76,4 +76,23 @@ function dld_staff_single_template( $single_template ) {
     return $single_template;
 }
 add_filter( 'single_template', 'dld_staff_single_template' );
+
+
+function default_attachment_display_settings() {
+	global $post;
+	$s_PostType = get_post_type($post);
+	if ( $s_PostType == 'staff' ){
+		update_option( 'image_default_size', 'staff-image' );
+	}
+}
+
+add_action( 'save_post', 'listing_image_save', 10, 1 );
+function listing_image_save ( $post_id ) {
+	if( isset( $_POST['_listing_cover_image'] ) ) {
+		$image_id = (int) $_POST['_listing_cover_image'];
+		update_post_meta( $post_id, '_listing_image_id', $image_id );
+	}
+}
+
+
 
