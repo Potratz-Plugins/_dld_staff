@@ -26,7 +26,7 @@ function dld_staff_activation() {
 register_activation_hook( __FILE__, 'dld_staff_activation' );
 
 function dld_staff_deactivation() {
-	$PageExists = get_page_by_title( 'Staff' );
+	$PageExists = get_page_by_title( 'Meet The Staff' );
 	if ( $PageExists != null ) {
 		wp_delete_post( $PageExists->ID, true );
 	}
