@@ -32,7 +32,7 @@ function staff_pages() {
         'label'               => __( 'staff', 'dld' ),
         'description'         => __( 'Custom Staff', 'dld' ),
         'labels'              => $labels,
-        'supports'            => array( 'title', 'revisions', ),
+        'supports'            => array( 'title', 'revisions', 'thumbnail'),
         'taxonomies'          => array( '' ),
         'hierarchical'        => true,
         'public'              => true,
@@ -50,7 +50,24 @@ function staff_pages() {
     );
 
     register_post_type( 'staff', $args );
-			
+
+// Ensure Featured Image Support for the Custom Post Type, without stepping on other plug-in toes
+$currentPostThumbnails = get_theme_support('post-thumbnails');
+if(is_array($currentPostThumbnails)) {
+        add_theme_support( 'post-thumbnails', array_merge($currentPostThumbnails, array( 'staff' )) );
+    } else {
+        add_theme_support( 'post-thumbnails', 'staff');
+}
+
+add_image_size( 'staff-image', 300, 400, true );
+function dld_image_sizes( $sizes ) {
+    return array_merge( $sizes, array(
+        'staff-image' => __('Staff Image'),
+        )
+    );
+}
+add_filter( 'image_size_names_choose', 'dld_image_sizes' );
+    
 			if( !( taxonomy_exists( 'department' ) ) ){
 				register_taxonomy('department', 'staff', array(
 					'label'			=>  __('Department') ,
@@ -75,4 +92,4 @@ function staff_pages() {
 			}
  
 }
-add_action( 'init', 'staff_pages', 0 );
+add_action( 'init', 'staff_pages' );

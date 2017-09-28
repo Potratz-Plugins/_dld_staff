@@ -11,11 +11,25 @@ require_once 'functions/staff-save.php';
 /* This chunck until end comment is to create, redirect staff page to templated file */
 function dld_staff_activation() {
 	$PageExists = get_page_by_title( 'Meet The Staff' );
+	$PageParent = get_page_by_title( 'Dealership' );
+	if ( $PageParent == null ) {
+		$a_Page = array(
+				'post_title'    => 'Dealership',
+				'post_content'  => '',
+				'post_status'   => 'publish',
+				'post_author'   => 0,
+				'post_type'		=> 'page'
+		);
+		// Insert the post into the database
+		$i_PageParentID = wp_insert_post( $a_Page );
+	}
+
 	if ( $PageExists == null ) {
 		$a_Page = array(
 				'post_title'    => 'Meet The Staff',
 				'post_content'  => '',
 				'post_status'   => 'publish',
+				'post_parent'   => $i_PageParentID,
 				'post_author'   => 0,
 				'post_type'		=> 'page'
 		);
@@ -48,7 +62,7 @@ function change_title_display( $title ){
 	global $post;
 	$s_PostType = get_post_type($post);
 	if ( $s_PostType == 'staff' ){
-		echo "Staff Name";
+		echo "<h2>Staff Name</h2>";
 	}else{
 		echo $title;
 	}	
@@ -93,6 +107,4 @@ function listing_image_save ( $post_id ) {
 		update_post_meta( $post_id, '_listing_image_id', $image_id );
 	}
 }
-
-
 

@@ -86,7 +86,7 @@ function listing_image_metabox ( $post ) {
 	global $content_width, $_wp_additional_image_sizes;
 	$image_id = get_post_meta( $post->ID, '_listing_image_id', true );
 	$old_content_width = $content_width;
-	$content_width = 254;
+	$content_width = 300;
 	if ( $image_id && get_post( $image_id ) ) {
 		if ( ! isset( $_wp_additional_image_sizes['staff-image'] ) ) {
 			$thumbnail_html = wp_get_attachment_image( $image_id, array( $content_width, $content_width ) );

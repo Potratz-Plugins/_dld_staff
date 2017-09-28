@@ -53,7 +53,6 @@ get_header(); ?>
 					$s_Name = apply_filters( 'the_title', $o_Staff->post_title );
 					$s_ImageAltText = $s_Name . ", a " . ( $a_CurrentStaff['JobTitle'][0] == "" ? " member of the ": $a_CurrentStaff['JobTitle'][0]." in the " ) . $a_Department->name;
 					$image_id = get_post_meta( $o_Staff->ID, '_listing_image_id', true );
-
 					$image = wp_get_attachment_image_src( $image_id, 'staff-image', '' );
 
 					if( isset( $image[0] ) && "" != $image[0] ) {
