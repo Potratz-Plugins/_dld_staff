@@ -1,14 +1,14 @@
 <?php
-if ( ! class_exists( 'Staff' ) ) {
-	class Staff {
-		public function __construct( ) {
+// if ( ! class_exists( 'Staff' ) ) {
+// 	class Staff {
+// 		public function __construct( ) {
 				
-		}
-		function getAllStaff() {
-			return get_posts(array("post_type" => "staff", "numberposts" => '-1'));
-		}
-	}
-}
+// 		}
+// 		function getAllStaff() {
+// 			return get_posts(array("post_type" => "staff", "numberposts" => '-1'));
+// 		}
+// 	}
+// }
 
 function staff_pages() {
 
@@ -32,7 +32,7 @@ function staff_pages() {
         'label'               => __( 'staff', 'dld' ),
         'description'         => __( 'Custom Staff', 'dld' ),
         'labels'              => $labels,
-        'supports'            => array( 'title', 'revisions', 'thumbnail'),
+        'supports'            => array( 'title', 'revisions'),
         'taxonomies'          => array( '' ),
         'hierarchical'        => true,
         'public'              => true,
@@ -93,3 +93,43 @@ add_filter( 'image_size_names_choose', 'dld_image_sizes' );
  
 }
 add_action( 'init', 'staff_pages' );
+
+function dld_staff_sub_menu(){
+   add_submenu_page('edit.php?post_type=staff', 'Staff Page Options', 'Options', 'manage_options', 'staff-options', 'dld_render_options_page');
+}
+add_action('admin_menu','dld_staff_sub_menu');
+
+
+add_action( 'admin_init', 'dld_render_options_settings' );
+function dld_render_options_settings() {
+    register_setting( 'dld-options-settings-group', 'staff_custom_css' );
+    register_setting( 'dld-options-settings-group', 'some_other_option' );
+}
+
+function dld_render_options_page() { ?>
+
+   <div class='wrap'>
+    <h2>Staff Page Options</h2>
+    <form method="post" action="options.php">
+        <?php settings_fields( 'dld-options-settings-group' ); ?>
+        <?php do_settings_sections( 'dld-options-settings-group' ); ?>
+        <table class="form-table">
+          <tr valign="top">
+          <th scope="row">Custom CSS:</th>
+          <td>
+            <textarea name="staff_custom_css" width="100%" rows="10" cols="100%"><?php echo get_option( 'staff_custom_css' ); ?></textarea>
+          </td>
+          </tr>
+          <tr valign="top">
+          <th scope="row">New Option 2:</th>
+          <td><input type="text" name="some_other_option" value="<?php echo get_option( 'some_other_option' ); ?>"/></td>
+          </tr>
+        </table>
+    <?php submit_button(); ?>
+
+    </form>
+   </div>
+
+   <?php
+}
+

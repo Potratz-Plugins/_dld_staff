@@ -3,12 +3,26 @@
  * Template Name: Staff
  *
  */
+
+$customCss = get_option( 'staff_custom_css' );
+if ($customCss != '') {
+echo '<style>';
+echo $customCss;
+echo '</style>';
+}
+?>
+<style>
+.StaffImage img {
+	width:100%;
+}
+</style>
+<?php
 get_header(); ?>
 
 <div class="page-content clearfix">
 	<section class="headerBG pad-0">
 		<div class="MaxWidth">
-			<div class="ContactTitle white-txt">Meet Our Staff</div>
+			<div class="ContactTitle">Meet Our Staff</div>
 		</div>
 	</section>
 	

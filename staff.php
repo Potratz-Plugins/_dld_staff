@@ -91,7 +91,6 @@ function dld_staff_single_template( $single_template ) {
 }
 add_filter( 'single_template', 'dld_staff_single_template' );
 
-
 function default_attachment_display_settings() {
 	global $post;
 	$s_PostType = get_post_type($post);
