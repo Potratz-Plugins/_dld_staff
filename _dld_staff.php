@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Staff
  * Description: Add/Edit/Delete staff members
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Scott Warren
  */
 
