@@ -2,9 +2,20 @@
 /*
  * Plugin Name: Staff
  * Description: Add/Edit/Delete staff members
- * Version: 0.8
+ * Version: 1.0.0
  * Author: Scott Warren
  */
+
+require 'plugin_update_check.php';
+$MyUpdateChecker = new PluginUpdateChecker_2_0 (
+   'https://kernl.us/api/v1/updates/59de7b31f9209572753d2aa4/',
+   __FILE__,
+   '_dld_staff',
+   1
+);
+// $MyUpdateChecker->purchaseCode = "somePurchaseCode";  <---- optional!
+// $MyUpdateChecker->remoteGetTimeout = 5; <--- optional
+
 include_once "class/class.staff.php";
 require_once 'functions/meta-boxes.php';
 require_once 'functions/staff-save.php';
